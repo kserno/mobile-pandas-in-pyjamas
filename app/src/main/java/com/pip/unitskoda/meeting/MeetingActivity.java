@@ -74,11 +74,13 @@ public class MeetingActivity extends BaseActivity implements MeetingContract.Scr
         Intent intent = getIntent();
 
         final List<Attendee> attendees = (List<Attendee>) intent.getSerializableExtra(EXTRA_ATTENDEES);
-        final List<String> userModels = intent.getStringArrayListExtra(EXTRA_LIST);
 
         String groupName = intent.getStringExtra(EXTRA_EVENT_NAME);
 
-
+        List<String> userModels = new ArrayList<>();
+        for (Attendee attendee: attendees) {
+            userModels.add(attendee.getEmail());
+        }
 
         groupName = groupName.replaceAll("\\s+", "");
 

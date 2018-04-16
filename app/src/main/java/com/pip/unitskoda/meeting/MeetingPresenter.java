@@ -118,12 +118,13 @@ public class MeetingPresenter extends BasePresenter<MeetingContract.Screen> impl
 
             @Override
             public void onResult(SpeechRecognitionResult result) {
-                List<String> text = new ArrayList<>();
-                for (Segment segment: result.getRecognitionResult().getSegments()) {
-                    text.add(segment.getWord());
+                StringBuilder stringBuilder = new StringBuilder();
+                for (Segment segment: result.getRecognitionResult().getSegments() ) {
+                    stringBuilder.append(segment.getWord());
+                    stringBuilder.append(",");
                 }
 
-                getScreen().showText(text);
+                getScreen().showText(stringBuilder.toString());
             }
 
             @Override
