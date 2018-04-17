@@ -1,6 +1,7 @@
 package com.pip.phonexiaapi.data;
 
 import com.google.gson.annotations.SerializedName;
+import com.pip.phonexiaapi.data.result.Speaker;
 
 import java.util.List;
 
@@ -8,7 +9,7 @@ import java.util.List;
  * Created by filipsollar on 6.4.18.
  */
 
-public class SpeakersResult extends BaseResult {
+public class SpeakersResult extends BaseResponse {
     private String model;
     @SerializedName("is_last")
     private boolean isLast;

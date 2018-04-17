@@ -1,13 +1,14 @@
-package com.pip.phonexiaapi.data;
+package com.pip.phonexiaapi.data.response;
 
 import com.google.gson.annotations.SerializedName;
+import com.pip.phonexiaapi.data.BaseResponse;
+import com.pip.phonexiaapi.data.Language;
+import com.pip.phonexiaapi.data.result.OneBestResult;
 
 /**
- * Created by filipsollar on 6.4.18.
+ * Created by filipsollar on 17.4.18
  */
-
-public class SpeechRecognitionResult extends BaseResult {
-
+public class GetSpeechToTextResponse extends BaseResponse {
     private Language model;
     @SerializedName("is_last")
     private boolean isLast;

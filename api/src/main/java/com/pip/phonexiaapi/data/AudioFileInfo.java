@@ -1,14 +1,13 @@
 package com.pip.phonexiaapi.data;
 
 import com.google.gson.annotations.SerializedName;
-
-import java.util.Date;
+import com.pip.phonexiaapi.data.result.DirectoryItem;
 
 /**
  * Created by filipsollar on 6.4.18.
  */
 
-public class AudioFileInfo extends DirectoryItem{
+public class AudioFileInfo extends DirectoryItem {
 
     private long frequency;
     private double length;

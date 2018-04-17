@@ -8,7 +8,7 @@ import java.io.Serializable;
  * Created by filipsollar on 6.4.18.
  */
 
-public class AttachDictateResult extends BaseResult implements Serializable {
+public class AttachDictateResult extends BaseResponse implements Serializable {
 
     @SerializedName("stream_task_info")
     private StreamTaskInfo streamTaskInfo;

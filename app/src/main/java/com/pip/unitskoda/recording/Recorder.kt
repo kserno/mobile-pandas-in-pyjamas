@@ -9,7 +9,7 @@ import io.reactivex.Observable
 import java.util.*
 
 
-object Recorder {
+class Recorder public @Inject constructor() {
 
     public const val RECORDER_SAMPLERATE = 8000
     private const val RECORDER_CHANNELS = AudioFormat.CHANNEL_IN_MONO

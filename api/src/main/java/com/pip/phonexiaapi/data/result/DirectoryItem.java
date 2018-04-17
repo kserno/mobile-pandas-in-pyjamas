@@ -1,4 +1,4 @@
-package com.pip.phonexiaapi.data;
+package com.pip.phonexiaapi.data.result;
 
 import com.google.gson.annotations.SerializedName;
 

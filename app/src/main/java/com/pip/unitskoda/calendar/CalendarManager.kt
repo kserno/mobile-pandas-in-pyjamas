@@ -8,25 +8,21 @@ import it.macisamuele.calendarprovider.EventInfo
 import java.util.*
 
 
-object CalendarManager {
+class CalendarManager public @Inject constructor(val context : Context) {
 
-    @JvmStatic
-    fun getCalendars(context: Context): List<CalendarInfo> {
+    fun getCalendars(): List<CalendarInfo> {
         return CalendarInfo.getAllCalendars(context)
     }
 
-    @JvmStatic
     fun getCalendarStrings(calendars: List<CalendarInfo>): List<String> {
         return calendars.map { it.displayName }
     }
 
-    @JvmStatic
-    fun getCurrentEventsOfCalendar(context: Context, calendar: CalendarInfo): List<EventInfo> {
+    fun getCurrentEventsOfCalendar(calendar: CalendarInfo): List<EventInfo> {
         return EventInfo.getEvents(context, Date(), Date(), listOf(calendar.id.toInt()), null)
     }
 
-    @JvmStatic
-    fun getAttendeesOfEvent(context: Context, eventInfo: EventInfo, userModels: List<String>): List<Attendee> {
+    fun getAttendeesOfEvent(eventInfo: EventInfo, userModels: List<String>): List<Attendee> {
         return AttendeesContentResolver(context).getAttendees(eventInfo.id, userModels)
     }
 }

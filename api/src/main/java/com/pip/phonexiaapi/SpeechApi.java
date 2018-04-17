@@ -1,26 +1,26 @@
 package com.pip.phonexiaapi;
 
-import android.media.AudioFormat;
 import android.util.Log;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.pip.phonexiaapi.data.AttachDictateResult;
 import com.pip.phonexiaapi.data.AudioFileInfoResult;
+import com.pip.phonexiaapi.data.BaseResponse;
 import com.pip.phonexiaapi.data.Language;
-import com.pip.phonexiaapi.data.ReqResult;
+import com.pip.phonexiaapi.data.result.ReqResult;
 import com.pip.phonexiaapi.data.SpeakerModelsResponse;
 import com.pip.phonexiaapi.data.SpeakerStreamResult;
 import com.pip.phonexiaapi.data.SpeakersResult;
-import com.pip.phonexiaapi.data.SpeechRecognitionResult;
 import com.pip.phonexiaapi.data.StreamResult;
-import com.pip.phonexiaapi.data.TechnologiesResult;
+import com.pip.phonexiaapi.data.response.GetTechnologiesResponse;
 import com.pip.phonexiaapi.data.Technology;
 import com.pip.phonexiaapi.request.SpeakerModels;
 import com.pip.phonexiaapi.service.PhonexiaService;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.ByteBuffer;
+import java.lang.reflect.Type;
 import java.util.List;
 
 import okhttp3.Credentials;
@@ -29,7 +29,8 @@ import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
-import okhttp3.ResponseBody;
+import okhttp3.WebSocket;
+import okhttp3.WebSocketListener;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -37,12 +38,6 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
-import rx.Observable;
-import rx.Single;
-import rx.Subscriber;
-
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by filipsollar on 6.4.18.
@@ -51,6 +46,8 @@ import rx.schedulers.Schedulers;
 public class SpeechApi implements ISpeechApi {
 
     public static final int SUCCESS_CODE = 200;
+    public static final int PENDING_CODE = 202;
+
     public static final String RECORD = "/record.wav";
     public static final String SERVER_API = "http://77.240.177.148:8601";
 
@@ -58,6 +55,9 @@ public class SpeechApi implements ISpeechApi {
     public static final String PASS = "hackathon";
 
     private Retrofit mRetrofit;
+    private OkHttpClient mClient;
+
+    private Gson mGson = new Gson();
 
     private PhonexiaService mPhonexiaService;
 
@@ -83,7 +83,7 @@ public class SpeechApi implements ISpeechApi {
     private RealTimeCallback<SpeechRecognitionResult> mCallback;
 
     public SpeechApi() {
-        OkHttpClient client = new OkHttpClient.Builder()
+        mClient = new OkHttpClient.Builder()
                 .addInterceptor(new Interceptor() {
                     @Override
                     public okhttp3.Response intercept(Chain chain) throws IOException {
@@ -107,7 +107,7 @@ public class SpeechApi implements ISpeechApi {
         Retrofit retrofit = new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .client(client)
+                .client(mClient)
                 .baseUrl(SERVER_API)
                 .build();
 
@@ -127,16 +127,16 @@ public class SpeechApi implements ISpeechApi {
 
     private void checkTechnologiesDictate(final int frequency, final Language language) {
         mPhonexiaService.getTechnologiesAvailable()
-                .enqueue(new Callback<ReqResult<TechnologiesResult>>() {
+                .enqueue(new Callback<ReqResult<GetTechnologiesResponse>>() {
                     @Override
-                    public void onResponse(Call<ReqResult<TechnologiesResult>> call, Response<ReqResult<TechnologiesResult>> response) {
+                    public void onResponse(Call<ReqResult<GetTechnologiesResponse>> call, Response<ReqResult<GetTechnologiesResponse>> response) {
                         if (checkTechnologiesResult(response.body().getResult(), "Dictate")) {
                             startStream(frequency, language);
                         }
                     }
 
                     @Override
-                    public void onFailure(Call<ReqResult<TechnologiesResult>> call, Throwable t) {
+                    public void onFailure(Call<ReqResult<GetTechnologiesResponse>> call, Throwable t) {
                         mCallback.onError(t);
                     }
                 });
@@ -245,12 +245,7 @@ public class SpeechApi implements ISpeechApi {
     }
 
 
-    @Override
-    public Single speechToText() {
-        return null;
-    }
-
-    private boolean checkTechnologiesResult(TechnologiesResult result, String techName) {
+    private boolean checkTechnologiesResult(GetTechnologiesResponse result, String techName) {
         for (Technology technology:result.getTechnologies()) {
             if (technology.getName().equals(techName)) {
                 return true;
@@ -335,6 +330,11 @@ public class SpeechApi implements ISpeechApi {
         });
     }
 
+    @Override
+    public void speechToText(String path, ApiCallback callback) {
+
+    }
+
 
     private void addUsersToGroup(List<String> userModels, final String groupName, final ApiCallback<Boolean> callback) {
         SpeakerModels models = new SpeakerModels();
@@ -361,11 +361,21 @@ public class SpeechApi implements ISpeechApi {
                 enqueue(new Callback<Void>() {
                     @Override
                     public void onResponse(Call<Void> call, Response<Void> response) {
-                        if (response.code() == 202) {
-                            //startChecking(callback); TODO
+                        if (response.code() == PENDING_CODE) {
                             String location = response.headers().get("Location");
                             location = location.substring(9, location.length());
                             System.out.println(location);
+                            hookWebSocket(location, new ApiCallback<BaseResponse>() {
+                                @Override
+                                public void onSuccess(BaseResponse result) {
+                                    callback.onSuccess(true);
+                                }
+
+                                @Override
+                                public void onFailure(Throwable t) {
+                                    callback.onFailure(t);
+                                }
+                            });
                         } else {
 
                             registerSidToStream(groupName, callback);
@@ -418,16 +428,52 @@ public class SpeechApi implements ISpeechApi {
                 });
     }
 
-    private byte[] shortArrToByte(short[] arr) {
-        int n = arr.length;
-        ByteBuffer byteBuf = ByteBuffer.allocate(2*n);
-        int i = 0;
-        while (n > i) {
-            byteBuf.putShort(arr[i]);
-            i++;
-        }
-        return byteBuf.array();
+
+    private <T extends BaseResponse> void hookWebSocket(String location, ApiCallback<T> apiCallback) {
+        String url = SERVER_API + "/pending/" + location;
+
+        Request request = new Request.Builder()
+                .url(url)
+                .addHeader("Connection", "Upgrade")
+                .addHeader("Upgrade", "websocket")
+                .addHeader("Sec-WebSocket-Version", "13")
+                .addHeader("Sec-WebSocket-Key", "")
+                .build();
+
+        AsynchronousRequestListener listener = new AsynchronousRequestListener(location, apiCallback);
+        WebSocket webSocket = mClient.newWebSocket(request, listener);
     }
 
 
+
+    private class AsynchronousRequestListener<T extends BaseResponse> extends WebSocketListener {
+
+        private String mLocation;
+        private ApiCallback<T> mApiCallback;
+
+        public AsynchronousRequestListener(String location, ApiCallback<T> apiCallback) {
+            mLocation = location;
+            mApiCallback = apiCallback;
+        }
+
+        @Override
+        public void onMessage(WebSocket webSocket, String text) {
+            super.onMessage(webSocket, text);
+            Type type = new TypeToken<ReqResult<T>>() {}.getType();
+            ReqResult<T> result = mGson.fromJson(text, type);
+
+            mApiCallback.onSuccess(result.getResult());
+        }
+
+        @Override
+        public void onClosed(WebSocket webSocket, int code, String reason) {
+            super.onClosed(webSocket, code, reason);
+        }
+
+        @Override
+        public void onFailure(WebSocket webSocket, Throwable t, okhttp3.Response response) {
+            super.onFailure(webSocket, t, response);
+            hookWebSocket(mLocation, mApiCallback); // retry on failure
+        }
+    }
 }
