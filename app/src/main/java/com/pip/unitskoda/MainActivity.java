@@ -45,6 +45,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -62,8 +65,11 @@ public class MainActivity extends BaseActivity implements MainContract.Screen, B
 
     public static final String EXTRA_ATTENDEE = "EXTRA_ATTENDEE";
 
+    private int counterSeconds = 0;
+    private Timer counterTimer = new Timer();
+
     private Spinner spCalendar;
-    private TextView tvEventName, tvDate, tvSpeakerName, tvSpokeText;
+    private TextView tvEventName, tvDate, tvSpeakerName, tvSpokeText, tvTime;
     private RecyclerView rvParticipants, rvMemos;
     private ImageView btAction;
     private CardView cardCalendarSelect, cardViewMemos, cardViewParticipants;
@@ -93,6 +99,7 @@ public class MainActivity extends BaseActivity implements MainContract.Screen, B
         tvEventName = findViewById(R.id.tvEventName);
         tvSpeakerName = findViewById(R.id.tvSpeakerName);
         tvSpokeText = findViewById(R.id.tvSpokeText);
+        tvTime = findViewById(R.id.tvTime);
         rvParticipants = findViewById(R.id.rvParticipants);
         rvMemos = findViewById(R.id.rvMemos);
         btAction = findViewById(R.id.btAction);
@@ -126,10 +133,10 @@ public class MainActivity extends BaseActivity implements MainContract.Screen, B
         btAction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                goToMeeting();
-                if (!isMeetingStarted)
+                goToMeeting();
+                /*if (!isMeetingStarted)
                     startMeeting();
-                else endMeeting();
+                else endMeeting();*/
             }
         });
 
@@ -140,6 +147,7 @@ public class MainActivity extends BaseActivity implements MainContract.Screen, B
 
         intent.putExtra(MeetingActivity.EXTRA_EVENT_NAME, mEventInfo.getTitle());
         intent.putExtra(MeetingActivity.EXTRA_ATTENDEES, new ArrayList<>(mAttendees));
+        intent.putExtra(MeetingActivity.EXTRA_LIST, (ArrayList) userModels);
 
         startActivity(intent);
     }
@@ -250,6 +258,7 @@ public class MainActivity extends BaseActivity implements MainContract.Screen, B
 
     @Override
     public void showUserModels(List<String> userModels) {
+        this.userModels = userModels;
         mAdapter.setUserModels(userModels);
 
         btAction.setEnabled(checkStartCondition(userModels));
@@ -283,6 +292,14 @@ public class MainActivity extends BaseActivity implements MainContract.Screen, B
     private void startMeeting() {
         isMeetingStarted = true;
 
+        counterSeconds = 0;
+        counterTimer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                updateCountTimer();
+            }
+        }, 0, 1000);
+
         btAction.setImageResource(R.drawable.ic_stop_record3);
 
         cardCalendarSelect.setVisibility(View.GONE);
@@ -292,13 +309,12 @@ public class MainActivity extends BaseActivity implements MainContract.Screen, B
         tvSpeakerName.setVisibility(View.VISIBLE);
         tvSpokeText.setVisibility(View.VISIBLE);
 
-        mPresenter.startListening(mAttendees);
-        mPresenter.createAndPrepareGroup(userModels, mEventInfo.getTitle());
 
     }
 
     private void endMeeting() {
         isMeetingStarted = false;
+        counterTimer.cancel();
 
         exportMeeting();
 
@@ -310,7 +326,6 @@ public class MainActivity extends BaseActivity implements MainContract.Screen, B
         tvSpokeText.setVisibility(View.GONE);
 
         btAction.setImageResource(R.drawable.ic_start_record);
-        mPresenter.stopStream();
     }
 
 
@@ -318,4 +333,20 @@ public class MainActivity extends BaseActivity implements MainContract.Screen, B
         //TODO export attendees, event info and memos
 
     }
+
+    private void updateCountTimer() {
+        counterSeconds++;
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                tvTime.setText(String.format("%02d:%02d:%02d",
+                        TimeUnit.SECONDS.toHours(counterSeconds),
+                        TimeUnit.SECONDS.toMinutes(counterSeconds),
+                        counterSeconds));
+            }
+        });
+    }
+
+
 }
