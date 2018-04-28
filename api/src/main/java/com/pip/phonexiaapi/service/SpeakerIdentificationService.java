@@ -1,10 +1,10 @@
 package com.pip.phonexiaapi.service;
 
-import com.pip.phonexiaapi.data.AudioFileInfoResult;
-import com.pip.phonexiaapi.data.SpeakerModelsResponse;
-import com.pip.phonexiaapi.data.SpeakerStreamResult;
-import com.pip.phonexiaapi.data.SpeakersResult;
-import com.pip.phonexiaapi.data.result.ReqResult;
+import com.pip.phonexiaapi.data.result.AudioFileInfoResult;
+import com.pip.phonexiaapi.data.common.ReqResult;
+import com.pip.phonexiaapi.data.result.SpeakerIdentificationModelsResult;
+import com.pip.phonexiaapi.data.result.SpeakerIdentificationStreamMultiResult;
+import com.pip.phonexiaapi.data.result.UserStreamTaskInfoResult;
 import com.pip.phonexiaapi.request.SpeakerModels;
 
 import okhttp3.RequestBody;
@@ -23,7 +23,7 @@ public interface SpeakerIdentificationService {
 
 
     @POST("/technologies/speakerid/speakermodels/{name}")
-    Call<Void> userSpeakerModels_post(
+    Call<Void> speakerModels_post(
             @Path("name") String name
     );
 
@@ -35,40 +35,38 @@ public interface SpeakerIdentificationService {
     );
 
 
-    @PUT("/technologies/speakerid/groups/{group_name}")
-    Call<Void> groups_put(
+    @POST("/technologies/speakerid/groups/{group_name}")
+    Call<Void> groups_post(
             @Path("group_name") String groupName
     );
 
     @POST("/technologies/speakerid/groups/{group_name}/speakermodel")
-    Call<Void> groupsSpeakerModel_post(
+    Call<Void> groups_speakerModel_post(
             @Path("group_name") String groupName,
             @Body SpeakerModels speakers
     );
 
     @PUT("/technologies/speakerid/speakermodels/{user_name}/prepare?model=XL3")
-    Call<Void> userSpeakerModelPrepare_put(
+    Call<Void> speakerModels_prepare_put(
             @Path("user_name") String speakerName
     );
 
     @PUT("/technologies/speakerid/groups/{group_name}/prepare?model=XL3")
-    Call<Void> groupSpeakerModelPrepare_put(
+    Call<Void> groups_prepare_put(
             @Path("group_name") String groupName
     );
 
     @POST("/technologies/speakerid/stream?model=XL3")
-    Call<ReqResult<SpeakerStreamResult>> stream_post(
+    Call<ReqResult<UserStreamTaskInfoResult>> stream_post(
             @Query("group") String groupName,
             @Query("stream") String streamId
-
     );
 
     @GET("/technologies/speakerid/stream")
-    Call<ReqResult<SpeakersResult>> getSpeakersResults(
+    Call<ReqResult<SpeakerIdentificationStreamMultiResult>> stream_get(
             @Query("task") String taskId
     );
 
-
     @GET("/technologies/speakerid/speakermodels")
-    Call<ReqResult<SpeakerModelsResponse>> getSpeakerModels();
+    Call<ReqResult<SpeakerIdentificationModelsResult>> speakerModels_get();
 }

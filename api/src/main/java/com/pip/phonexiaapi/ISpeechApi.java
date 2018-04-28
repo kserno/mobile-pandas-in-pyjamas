@@ -1,7 +1,6 @@
 package com.pip.phonexiaapi;
 
-import com.pip.phonexiaapi.data.AudioFileInfoResult;
-import com.pip.phonexiaapi.data.Language;
+import com.pip.phonexiaapi.data.result.AudioFileInfoResult;
 
 import java.io.File;
 import java.util.List;
@@ -30,4 +29,7 @@ public interface ISpeechApi {
     void createAndPrepareGroup(List<String> userModels, String groupName, ApiCallback<Boolean> callback);
 
     void speechToText(String path, ApiCallback callback);
+
+    Call
+
 }

@@ -1,8 +1,7 @@
 package com.pip.phonexiaapi.service;
 
-import com.pip.phonexiaapi.data.Language;
-import com.pip.phonexiaapi.data.response.GetDiarizationResponse;
-import com.pip.phonexiaapi.data.result.ReqResult;
+import com.pip.phonexiaapi.data.common.ReqResult;
+import com.pip.phonexiaapi.data.result.DiarizationResult;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -15,14 +14,14 @@ import retrofit2.http.Query;
  */
 public interface DiarizationService {
     @GET("/technologies/diarization")
-    Call<ReqResult<GetDiarizationResponse>> diarization_get(
+    Call<ReqResult<DiarizationResult>> diarization_get(
             @Query("path") String path,
             @Query("model") String model, // diarization model
-            @Query("max_speakers") int maxSpeakers,
-            @Query("total_speaker") int totalSpeakers,
-            @Query("cache_only") boolean cacheOnly,
-            @Query("cache_disable") boolean cacheDisable,
-            @Query("from_time") double fromTime,
-            @Query("to_time") double toTime
+            @Query("max_speakers") Integer maxSpeakers,
+            @Query("total_speaker") Integer totalSpeakers,
+            @Query("cache_only") Boolean cacheOnly,
+            @Query("cache_disable") Boolean cacheDisable,
+            @Query("from_time") Double fromTime,
+            @Query("to_time") Double toTime
     );
 }

@@ -1,8 +1,8 @@
 package com.pip.phonexiaapi.service;
 
-import com.pip.phonexiaapi.data.Language;
-import com.pip.phonexiaapi.data.response.GetKeyWordSpottingResponse;
-import com.pip.phonexiaapi.data.result.ReqResult;
+import com.pip.phonexiaapi.data.anns.Language;
+import com.pip.phonexiaapi.data.common.ReqResult;
+import com.pip.phonexiaapi.data.result.KeywordSpottingResult;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -13,14 +13,14 @@ import retrofit2.http.Query;
  */
 public interface KeywordSpottingService {
     @GET("/technolgies/keywordspotting")
-    Call<ReqResult<GetKeyWordSpottingResponse>> keywordSpotting_get(
+    Call<ReqResult<KeywordSpottingResult>> keywordSpotting_get(
             @Query("path") String path,
-            @Query("model") Language model,
+            @Query("model") @Language String model,
             @Query("kwlist") String keyWordList,
-            @Query("cache_only") boolean cacheOnly,
-            @Query("cache_disable") boolean cacheDisable,
-            @Query("from_time") double fromTime,
-            @Query("to_time") double toTime
+            @Query("cache_only") Boolean cacheOnly,
+            @Query("cache_disable") Boolean cacheDisable,
+            @Query("from_time") Double fromTime,
+            @Query("to_time") Double toTime
     );
 
 }

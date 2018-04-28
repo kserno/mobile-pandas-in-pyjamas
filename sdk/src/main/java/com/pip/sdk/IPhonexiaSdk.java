@@ -14,12 +14,15 @@ public interface IPhonexiaSdk {
      */
     void loadServerInformation(SdkCallback<ServerInfoModel> callback);
 
-    void startStream();
+    /*void startStream();
+    void stopStream();
+
+    void attachStreamAnalyzer(StreamAnalyzer streamAnalyzer);
 
     boolean isStreamRunning();
 
-    void attachDictate();
-    void attachSpeakerIdentification();
-
     void speechToText();
+    void diarization();
+    void timeAnalysis();*/
+
 }

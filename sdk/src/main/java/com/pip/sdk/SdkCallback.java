@@ -1,11 +1,9 @@
 package com.pip.sdk;
 
-import com.pip.sdk.data.BaseResponseModel;
-
 /**
  * Created by filipsollar on 17.4.18
  */
-public interface SdkCallback<T extends BaseResponseModel> {
+public interface SdkCallback<T> {
     void onSuccess(T result);
     void onFailure(Throwable t);
 }

@@ -1,7 +1,5 @@
 package com.pip.phonexiaapi;
 
-import com.pip.phonexiaapi.data.SpeakersResult;
-
 /**
  * Created by filipsollar on 6.4.18.
  */

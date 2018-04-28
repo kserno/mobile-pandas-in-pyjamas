@@ -1,7 +1,7 @@
 package com.pip.phonexiaapi.service;
 
-import com.pip.phonexiaapi.data.result.ReqResult;
-import com.pip.phonexiaapi.data.StreamResult;
+import com.pip.phonexiaapi.data.common.ReqResult;
+import com.pip.phonexiaapi.data.result.HttpStreamResult;
 
 import okhttp3.RequestBody;
 import retrofit2.Call;
@@ -17,7 +17,7 @@ import retrofit2.http.Query;
 public interface StreamService {
 
     @POST("/stream/http")
-    Call<ReqResult<StreamResult>> httpStream_post(
+    Call<ReqResult<HttpStreamResult>> httpStream_post(
             @Query("frequency") int frequency,
             @Query("n_channels") Integer numberOfChannels,
             @Query("path") String pathToFile // path to file where saved if not set no data is saved
@@ -26,13 +26,13 @@ public interface StreamService {
     /**
      * Send chunks of data
      * @param streamId
-     * @param S16IErawData
+     * @param s16IErawData
      * @return
      */
     @PUT("/stream/http")
     Call<Void> httpStream_put(
             @Query("stream") String streamId,
-            @Body RequestBody S16IErawData
+            @Body RequestBody s16IErawData
     );
 
     @DELETE("/stream/http")

@@ -1,11 +1,12 @@
 package com.pip.phonexiaapi.service;
 
-import com.pip.phonexiaapi.data.response.GetServerInfoResponse;
-import com.pip.phonexiaapi.data.response.GetStatusResponse;
-import com.pip.phonexiaapi.data.response.GetTasksResponse;
-import com.pip.phonexiaapi.data.result.ReqResult;
-import com.pip.phonexiaapi.data.response.GetTechnologiesResponse;
-import com.pip.phonexiaapi.data.login.LoginResponse;
+import com.pip.phonexiaapi.data.common.ReqResult;
+import com.pip.phonexiaapi.data.result.AudioFileInfoResult;
+import com.pip.phonexiaapi.data.result.ServerInfoResult;
+import com.pip.phonexiaapi.data.result.StatusResult;
+import com.pip.phonexiaapi.data.result.TasksResult;
+import com.pip.phonexiaapi.data.result.TechnologiesResult;
+import com.pip.phonexiaapi.data.result.UserSessionResult;
 
 import okhttp3.RequestBody;
 import retrofit2.Call;
@@ -39,31 +40,31 @@ import retrofit2.http.Query;
 public interface BasicService {
 
     @POST("/login")
-    Call<ReqResult<LoginResponse>> login(
+    Call<ReqResult<UserSessionResult>> login(
         @Header("Authorization") String token
     );
 
     @POST("/audiofile")
-    Call<Void> audioFile_post( // TODO change return data type
+    Call<ReqResult<AudioFileInfoResult>> audiofile_post(
             @Query("path") String path,
             @Body RequestBody audioData
     );
 
     @GET("/audiofile")
-    Call<Void> audioFile_get( // TODO change return data type
+    Call<Void> audiofile_get( // TODO change return data type
             @Query("path") String path
     );
 
     @GET("/technologies")
-    Call<ReqResult<GetTechnologiesResponse>> technologies_get();
+    Call<ReqResult<TechnologiesResult>> technologies_get();
 
     @GET("/tasks")
-    Call<ReqResult<GetTasksResponse>> tasks_get();
+    Call<ReqResult<TasksResult>> tasks_get();
 
     @GET("/status")
-    Call<ReqResult<GetStatusResponse>> status_get();
+    Call<ReqResult<StatusResult>> status_get();
 
     @GET("/server/info")
-    Call<ReqResult<GetServerInfoResponse>> serverInfo_get();
+    Call<ReqResult<ServerInfoResult>> serverInfo_get();
 
 }

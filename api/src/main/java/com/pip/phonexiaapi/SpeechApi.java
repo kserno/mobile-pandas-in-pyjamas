@@ -4,19 +4,19 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.pip.phonexiaapi.data.AttachDictateResult;
-import com.pip.phonexiaapi.data.AudioFileInfoResult;
-import com.pip.phonexiaapi.data.BaseResponse;
-import com.pip.phonexiaapi.data.Language;
-import com.pip.phonexiaapi.data.result.ReqResult;
-import com.pip.phonexiaapi.data.SpeakerModelsResponse;
-import com.pip.phonexiaapi.data.SpeakerStreamResult;
-import com.pip.phonexiaapi.data.SpeakersResult;
-import com.pip.phonexiaapi.data.StreamResult;
+import com.pip.phonexiaapi.data.result.AudioFileInfoResult;
+import com.pip.phonexiaapi.data.common.ReqResult;
 import com.pip.phonexiaapi.data.response.GetTechnologiesResponse;
-import com.pip.phonexiaapi.data.Technology;
+import com.pip.phonexiaapi.data.common.Technology;
 import com.pip.phonexiaapi.request.SpeakerModels;
+import com.pip.phonexiaapi.service.BasicService;
+import com.pip.phonexiaapi.service.DiarizationService;
+import com.pip.phonexiaapi.service.DictateService;
+import com.pip.phonexiaapi.service.KeywordSpottingService;
 import com.pip.phonexiaapi.service.PhonexiaService;
+import com.pip.phonexiaapi.service.SpeakerIdentificationService;
+import com.pip.phonexiaapi.service.StreamService;
+import com.pip.phonexiaapi.service.TimeAnalysisService;
 
 import java.io.File;
 import java.io.IOException;
@@ -61,9 +61,17 @@ public class SpeechApi implements ISpeechApi {
 
     private PhonexiaService mPhonexiaService;
 
-    private String mStreamId;
+    private BasicService mBasicService;
+    private StreamService mStreamService;
+    private DictateService mDictateService;
+    private DiarizationService mDiarizationService;
+    private KeywordSpottingService mKeywordSpottingService;
+    private SpeakerIdentificationService mSpeakerIdentificationService;
+    private TimeAnalysisService mTimeAnalysisService;
+
+    /*private String mStreamId;
     private String mTaskId;
-    private String mRecognitionTaskId;
+    private String mRecognitionTaskId;*/
 
     private static final String TAG = SpeechApi.class.getSimpleName();
 
