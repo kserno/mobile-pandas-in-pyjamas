@@ -90,8 +90,6 @@ public class PhonexiaApi implements IPhonexiaApi {
                         if (request.body() != null) {
                             Log.d(TAG, request.body().toString());
                         }
-
-
                         return chain.proceed(request);
                     }
                 })
@@ -156,7 +154,7 @@ public class PhonexiaApi implements IPhonexiaApi {
                 maxSpeakers,
                 totalSpeakers,
                 cacheOnly,
-                 cacheDisable,
+                cacheDisable,
                 fromTime,
                 toTime
         );
@@ -227,7 +225,7 @@ public class PhonexiaApi implements IPhonexiaApi {
     }
 
     @Override
-    public Call<ReqResult<SpeakerIdentificationStreamMultiResult>> getSidRealTimeResults(String taskId) {
+    public Call<ReqResult<SpeakerIdentificationStreamMultiResult>> getSidStreamResults(String taskId) {
         return mSpeakerIdentificationService.stream_get(taskId);
     }
 

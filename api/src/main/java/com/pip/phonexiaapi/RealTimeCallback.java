@@ -7,7 +7,6 @@ package com.pip.phonexiaapi;
 public interface RealTimeCallback<T>{
     void onStarted();
     void onError(Throwable t);
-    void onSpeakerResult(SpeakersResult result);
     void onResult(T result);
     void finished();
 

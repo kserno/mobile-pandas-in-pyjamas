@@ -62,7 +62,7 @@ dependencies {
     implementation 'com.karumi:dexter:4.2.0'
     implementation appDependencies.toasty
 
-    compile 'it.macisamuele:calendarprovider-lib:0.0.1'
+    implementation 'it.macisamuele:calendarprovider-lib:0.0.1'
 
 
 

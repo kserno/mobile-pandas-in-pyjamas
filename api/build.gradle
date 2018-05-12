@@ -21,6 +21,9 @@ android {
         }
     }
 
+    lintOptions {
+        abortOnError false
+    }
 }
 
 dependencies {
@@ -33,6 +36,9 @@ dependencies {
     implementation networkDependencies.okhttpInterceptor
 
     implementation networkDependencies.okhttp
+
+    androidTestImplementation 'com.android.support.test:runner:1.0.1'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
 
     implementation testDependencies.junit
 

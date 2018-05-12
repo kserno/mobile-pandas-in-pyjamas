@@ -1,6 +1,7 @@
 package com.pip.phonexiaapi.data.result;
 
 import com.google.gson.annotations.SerializedName;
+import com.pip.phonexiaapi.data.anns.Language;
 import com.pip.phonexiaapi.data.common.Segment;
 import com.pip.phonexiaapi.data.common.TimeRange;
 
@@ -11,7 +12,8 @@ import java.util.List;
  */
 public class KeywordSpottingResult extends BaseResult {
     private String file;
-    private Language model;
+    @Language
+    private String model;
     @SerializedName("keyword_list")
     private String keywordList;
     @SerializedName("time_range")
@@ -22,7 +24,7 @@ public class KeywordSpottingResult extends BaseResult {
         return file;
     }
 
-    public Language getModel() {
+    public String getModel() {
         return model;
     }
 

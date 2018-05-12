@@ -6,7 +6,6 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.pip.phonexiaapi.data.result.AudioFileInfoResult;
 import com.pip.phonexiaapi.data.common.ReqResult;
-import com.pip.phonexiaapi.data.response.GetTechnologiesResponse;
 import com.pip.phonexiaapi.data.common.Technology;
 import com.pip.phonexiaapi.request.SpeakerModels;
 import com.pip.phonexiaapi.service.BasicService;
@@ -43,8 +42,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Created by filipsollar on 6.4.18.
  */
 
-public class SpeechApi implements ISpeechApi {
+public class SpeechApi {
 
+    /**
     public static final int SUCCESS_CODE = 200;
     public static final int PENDING_CODE = 202;
 
@@ -71,7 +71,7 @@ public class SpeechApi implements ISpeechApi {
 
     /*private String mStreamId;
     private String mTaskId;
-    private String mRecognitionTaskId;*/
+    private String mRecognitionTaskId;
 
     private static final String TAG = SpeechApi.class.getSimpleName();
 
@@ -484,4 +484,5 @@ public class SpeechApi implements ISpeechApi {
             hookWebSocket(mLocation, mApiCallback); // retry on failure
         }
     }
+    */
 }

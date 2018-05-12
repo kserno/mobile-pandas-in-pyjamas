@@ -90,7 +90,7 @@ public interface IPhonexiaApi {
             String groupName,
             String streamId
     );
-    Call<ReqResult<SpeakerIdentificationStreamMultiResult>> getSidRealTimeResults(String taskId);
+    Call<ReqResult<SpeakerIdentificationStreamMultiResult>> getSidStreamResults(String taskId);
     Call<ReqResult<SpeakerIdentificationModelsResult>> getSpeakerModels();
     // <--------- SIDService end ------------->
     // <--------- STT Service begin ---------->
